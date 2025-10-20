@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق البحث عن FCC ID للسيارات</title>
+    <title>تطبيق البحث في ملفات CSV</title>
     <style>
         :root {
             --primary-color: #0f0f23;
@@ -61,7 +61,6 @@
             font-size: 1.2rem;
             color: var(--text-color);
             opacity: 0.8;
-            margin-bottom: 20px;
         }
 
         .search-container {
@@ -192,20 +191,18 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
 
         .modal-content {
             background-color: var(--secondary-color);
             border-radius: 15px;
             padding: 30px;
-            width: 100%;
-            max-width: 1000px;
-            max-height: 85vh;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 0 30px var(--accent-color);
             border: 2px solid var(--accent-color);
-            position: relative;
         }
 
         .close-btn {
@@ -217,11 +214,6 @@
             color: var(--accent-color2);
             font-size: 1.5rem;
             cursor: pointer;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .modal-header {
@@ -254,28 +246,6 @@
             margin: 0 auto 15px;
         }
 
-        .search-tips {
-            background-color: rgba(26, 26, 46, 0.6);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            max-width: 700px;
-            border-left: 3px solid var(--accent-color2);
-        }
-
-        .search-tips h3 {
-            color: var(--accent-color2);
-            margin-bottom: 10px;
-        }
-
-        .search-tips ul {
-            padding-right: 20px;
-        }
-
-        .search-tips li {
-            margin-bottom: 8px;
-        }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -293,16 +263,11 @@
             
             .search-btn {
                 padding: 8px 20px;
-                font-size: 0.9rem;
             }
             
             .card {
                 width: 100%;
                 max-width: 350px;
-            }
-            
-            .modal-content {
-                padding: 20px 15px;
             }
         }
 
@@ -323,22 +288,18 @@
                 margin-top: 10px;
                 width: 100%;
             }
-            
-            .sync-btn {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>نظام البحث عن FCC ID للسيارات</h1>
-            <p class="subtitle">ابحث عن FCC ID المتوافق مع سيارتك بذكاء وسرعة - أدخل معلومات السيارة</p>
+            <h1>نظام البحث المتقدم</h1>
+            <p class="subtitle">ابحث في قاعدة البيانات بذكاء وسرعة</p>
         </header>
         
         <div class="search-container">
-            <input type="text" class="search-box" id="searchInput" placeholder="أدخل معلومات السيارة (مثال: تويوتا كامري 2020 أو Nissan Altima)">
+            <input type="text" class="search-box" id="searchInput" placeholder="اكتب كلمة البحث هنا...">
             <button class="search-btn" id="searchBtn">بحث</button>
         </div>
         
@@ -354,22 +315,12 @@
         <div class="results-container" id="resultsContainer">
             <!-- سيتم إضافة البطاقات هنا ديناميكياً -->
         </div>
-
-        <div class="search-tips">
-            <h3>نصائح للبحث الدقيق:</h3>
-            <ul>
-                <li>استخدم عدة كلمات لزيادة دقة النتائج (مثال: "هوندا سيفيك 2019")</li>
-                <li>يمكنك البحث باستخدام الماركة والموديل فقط (مثال: "شفروليه ماليبو")</li>
-                <li>البحث غير حساس لحالة الأحرف (يمكنك استخدام أحرف كبيرة أو صغيرة)</li>
-                <li>استخدم زر المزامنة لتحديث البيانات من المصادر</li>
-            </ul>
-        </div>
     </div>
     
     <div class="modal" id="modal">
         <div class="modal-content">
             <button class="close-btn" id="closeModal">&times;</button>
-            <div class="modal-header">نتائج البحث عن FCC ID</div>
+            <div class="modal-header">نتائج البحث</div>
             <div class="modal-results" id="modalResults">
                 <!-- سيتم إضافة البطاقات هنا ديناميكياً -->
             </div>
@@ -377,7 +328,7 @@
     </div>
 
     <script>
-        // بيانات التطبيق - FCC ID للسيارات
+        // بيانات التطبيق
         const dataSources = [
             'https://raw.githubusercontent.com/iqsd2020-ctrl/MASTER_KEY_DATA/main/Chevrolet_Gmc.csv',
             'https://raw.githubusercontent.com/iqsd2020-ctrl/MASTER_KEY_DATA/main/Dodge_Jeep_Chrysler.csv',
@@ -423,14 +374,13 @@
 
         // تحميل البيانات من localStorage أو المزامنة
         async function loadData() {
-            const storedData = localStorage.getItem('fccCarData');
+            const storedData = localStorage.getItem('csvData');
             const lastSync = localStorage.getItem('lastSync');
             
             if (storedData && lastSync) {
                 statusEl.textContent = `تم تحميل البيانات (آخر مزامنة: ${new Date(parseInt(lastSync)).toLocaleString()})`;
                 allData = JSON.parse(storedData);
             } else {
-                statusEl.textContent = 'جاري تحميل البيانات لأول مرة...';
                 await syncData();
             }
         }
@@ -450,21 +400,13 @@
                     allData = allData.concat(data);
                 }
                 
-                localStorage.setItem('fccCarData', JSON.stringify(allData));
+                localStorage.setItem('csvData', JSON.stringify(allData));
                 localStorage.setItem('lastSync', Date.now().toString());
                 
                 statusEl.textContent = `تمت المزامنة بنجاح (${allData.length} سجل)`;
             } catch (error) {
                 console.error('خطأ في المزامنة:', error);
                 statusEl.textContent = 'حدث خطأ أثناء المزامنة';
-                
-                // إذا فشلت المزامنة، استخدم بيانات تجريبية
-                if (allData.length === 0) {
-                    allData = getSampleData();
-                    localStorage.setItem('fccCarData', JSON.stringify(allData));
-                    localStorage.setItem('lastSync', Date.now().toString());
-                    statusEl.textContent = `تم تحميل البيانات التجريبية (${allData.length} سجل)`;
-                }
             }
             
             loadingEl.style.display = 'none';
@@ -473,8 +415,6 @@
         // تحليل CSV إلى كائنات JavaScript
         function parseCSV(csvText) {
             const lines = csvText.split('\n');
-            if (lines.length === 0) return [];
-            
             const headers = lines[0].split(',').map(h => h.trim());
             
             const data = [];
@@ -492,76 +432,6 @@
             }
             
             return data;
-        }
-
-        // بيانات تجريبية في حالة عدم توفر البيانات الحقيقية
-        function getSampleData() {
-            return [
-                {
-                    "FCC ID": "ABC123456",
-                    "الشركة المصنعة": "تويوتا",
-                    "الموديل": "كامري",
-                    "السنة": "2020",
-                    "نوع الجهاز": "نظام الترفيه",
-                    "الوصف": "شاشة لمس مع راديو وبلوتوث"
-                },
-                {
-                    "FCC ID": "DEF789012",
-                    "الشركة المصنعة": "نيسان",
-                    "الموديل": "ألتيما",
-                    "السنة": "2019",
-                    "نوع الجهاز": "نظام الملاحة",
-                    "الوصف": "نظام ملاحة GPS مع راديو"
-                },
-                {
-                    "FCC ID": "GHI345678",
-                    "الشركة المصنعة": "هوندا",
-                    "الموديل": "سيفيك",
-                    "السنة": "2021",
-                    "نوع الجهاز": "وحدة تحكم",
-                    "الوصف": "وحدة التحكم الإلكترونية الرئيسية"
-                },
-                {
-                    "FCC ID": "JKL901234",
-                    "الشركة المصنعة": "شفروليه",
-                    "الموديل": "ماليبو",
-                    "السنة": "2018",
-                    "نوع الجهاز": "نظام الاتصال",
-                    "الوصف": "نظام اتصال بالإنترنت والهاتف"
-                },
-                {
-                    "FCC ID": "MNO567890",
-                    "الشركة المصنعة": "فورد",
-                    "الموديل": "فوكس",
-                    "السنة": "2020",
-                    "نوع الجهاز": "نظام الأمان",
-                    "الوصف": "نظام مراقبة ضغط الإطارات"
-                },
-                {
-                    "FCC ID": "PQR123789",
-                    "الشركة المصنعة": "هيونداي",
-                    "الموديل": "سوناتا",
-                    "السنة": "2022",
-                    "نوع الجهاز": "شاشة عرض",
-                    "الوصف": "شاشة عرض رقمية للمقود"
-                },
-                {
-                    "FCC ID": "STU456123",
-                    "الشركة المصنعة": "كيا",
-                    "الموديل": "أوبتيما",
-                    "السنة": "2019",
-                    "نوع الجهاز": "نظام الصوت",
-                    "الوصف": "نظام صوتي متميز مع مكبرات صوت"
-                },
-                {
-                    "FCC ID": "VWX789456",
-                    "الشركة المصنعة": "مرسيدس",
-                    "الموديل": "فئة C",
-                    "السنة": "2021",
-                    "نوع الجهاز": "نظام الترفيه",
-                    "الوصف": "شاشة ترفيهية خلفية للمقاعد الخلفية"
-                }
-            ];
         }
 
         // تنفيذ البحث
@@ -592,16 +462,95 @@
             }, 500);
         }
 
-        // البحث الذكي متعدد الكلمات
+        // البحث الذكي (غير حساس لحالة الأحرف والحركات)
         function smartSearch(data, query) {
             // تطبيع النص (إزالة التشكيل والتغيير إلى أحرف صغيرة)
             const normalizeText = (text) => {
-                if (typeof text !== 'string') return '';
                 return text
                     .normalize('NFD')
                     .replace(/[\u064B-\u065F]/g, '') // إزالة التشكيل العربي
                     .toLowerCase();
             };
             
-            // تقسيم الاستعلام إلى كلمات منفصلة
-            const searchWords = 
+            const normalizedQuery = normalizeText(query);
+            
+            return data.filter(item => {
+                // البحث في جميع خصائص الكائن
+                for (const key in item) {
+                    if (item.hasOwnProperty(key)) {
+                        const normalizedValue = normalizeText(item[key]);
+                        
+                        // البحث عن الكلمة كاملة أو جزئية
+                        if (normalizedValue.includes(normalizedQuery)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            });
+        }
+
+        // عرض النتائج في البطاقات
+        function displayResults(results) {
+            resultsContainer.innerHTML = '';
+            modalResults.innerHTML = '';
+            
+            if (results.length === 0) return;
+            
+            // عرض أول 6 نتائج فقط في الصفحة الرئيسية
+            const displayCount = Math.min(results.length, 6);
+            
+            for (let i = 0; i < displayCount; i++) {
+                const card = createCard(results[i]);
+                resultsContainer.appendChild(card);
+            }
+            
+            // عرض جميع النتائج في النافذة المنبثقة
+            results.forEach(item => {
+                const card = createCard(item);
+                modalResults.appendChild(card);
+            });
+        }
+
+        // إنشاء بطاقة عرض للبيانات
+        function createCard(data) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            let cardContent = '<div class="card-header">';
+            
+            // استخدام أول خاصية غير فارغة كعنوان
+            for (const key in data) {
+                if (data[key] && data[key].trim() !== '') {
+                    cardContent += `<h3>${data[key]}</h3>`;
+                    break;
+                }
+            }
+            
+            cardContent += '</div><div class="card-content">';
+            
+            // إضافة البيانات إلى البطاقة
+            for (const key in data) {
+                if (data[key] && data[key].trim() !== '') {
+                    cardContent += `
+                        <div class="card-row">
+                            <span class="card-label">${key}:</span>
+                            <span>${data[key]}</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            cardContent += '</div>';
+            card.innerHTML = cardContent;
+            
+            return card;
+        }
+
+        // عرض النافذة المنبثقة
+        function showModal() {
+            modal.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
