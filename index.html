@@ -31,7 +31,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(0, 255, 157, 0.05) 0%, transparent 20%),
                 radial-gradient(circle at 90% 80%, rgba(255, 0, 200, 0.05) 0%, transparent 20%);
         }
@@ -42,6 +42,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex-grow: 1; /* Added to push footer to the bottom */
         }
 
         header {
@@ -55,6 +56,7 @@
             margin-bottom: 10px;
             text-shadow: 0 0 10px var(--accent-color);
             color: var(--accent-color);
+            line-height: 1.2; /* Added for better spacing */
         }
 
         .subtitle {
@@ -72,7 +74,8 @@
 
         .search-box {
             width: 100%;
-            padding: 15px 20px;
+            /* IMPROVEMENT: Added padding-left to prevent text from going under the button */
+            padding: 15px 20px 15px 140px;
             background-color: var(--secondary-color);
             border: 2px solid var(--accent-color);
             border-radius: 50px;
@@ -126,17 +129,33 @@
             transform: scale(1.05);
             box-shadow: 0 0 20px var(--accent-color), 0 0 20px var(--accent-color2);
         }
+        
+        /* Style for the 'View All' button */
+        .view-all-btn {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
 
         .status {
-            margin-bottom: 20px;
+            margin-bottom: 5px; /* Reduced bottom margin */
             font-size: 1rem;
             color: var(--accent-color);
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .status-note {
+            margin-bottom: 20px; /* Added margin below the note */
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
             text-align: center;
         }
 
         .results-container {
             width: 100%;
-            display: none;
+            display: flex;
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
@@ -150,6 +169,8 @@
             box-shadow: var(--shadow);
             border: 1px solid rgba(0, 255, 157, 0.2);
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .card:hover {
@@ -168,6 +189,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            flex-grow: 1;
         }
 
         .card-row {
@@ -203,6 +225,7 @@
             overflow-y: auto;
             box-shadow: 0 0 30px var(--accent-color);
             border: 2px solid var(--accent-color);
+            position: relative;
         }
 
         .close-btn {
@@ -251,84 +274,75 @@
             100% { transform: rotate(360deg); }
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .search-box {
-                padding: 12px 15px;
-                font-size: 1rem;
-            }
-            
-            .search-btn {
-                padding: 8px 20px;
-            }
-            
-            .card {
-                width: 100%;
-                max-width: 350px;
-            }
+        /* Footer Styles */
+        footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px; /* Space above the footer */
         }
 
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.7rem;
-            }
-            
-            .search-container {
-                margin-bottom: 20px;
-            }
-            
-            .search-btn {
-                position: relative;
-                left: 0;
-                top: 0;
-                transform: none;
-                margin-top: 10px;
-                width: 100%;
-            }
+        .footer-content {
+            display: inline-block;
+            border: 2px solid #FFD700; /* Gold color, sharp border */
+            padding: 8px 15px; /* Made the box smaller */
+            background-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); /* Gold shadow */
+        }
+
+        .footer-content p {
+            margin: 2px 0; /* Brought lines closer */
+            color: #FFD700; /* Gold text */
+            font-size: 0.8rem; /* Made text smaller */
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>نظام البحث المتقدم</h1>
-            <p class="subtitle">ابحث في قاعدة البيانات بذكاء وسرعة</p>
+            <h1>نظام البحث المتقدم<br>MASTER KEY</h1>
+            <p class="subtitle">ادخل طراز السيارة والموديل</p>
         </header>
-        
+
         <div class="search-container">
-            <input type="text" class="search-box" id="searchInput" placeholder="اكتب كلمة البحث هنا...">
+            <input type="text" class="search-box" id="searchInput" placeholder="اكتب كلمة أو أكثر للبحث...">
             <button class="search-btn" id="searchBtn">بحث</button>
         </div>
-        
+
         <button class="sync-btn" id="syncBtn">مزامنة البيانات</button>
-        
+
         <div class="status" id="status">جاهز للبحث</div>
-        
+        <p class="status-note">يتم تحديث البيانات بشكل يومي لتكون اكثر شمولا</p>
+
         <div class="loading" id="loading">
             <div class="spinner"></div>
             <p>جاري البحث...</p>
         </div>
-        
+
         <div class="results-container" id="resultsContainer">
-            <!-- سيتم إضافة البطاقات هنا ديناميكياً -->
+            <!-- Search results will be dynamically added here -->
         </div>
     </div>
-    
+
     <div class="modal" id="modal">
         <div class="modal-content">
             <button class="close-btn" id="closeModal">&times;</button>
-            <div class="modal-header">نتائج البحث</div>
+            <div class="modal-header" id="modalHeader">نتائج البحث</div>
             <div class="modal-results" id="modalResults">
-                <!-- سيتم إضافة البطاقات هنا ديناميكياً -->
+                <!-- All search results for the modal will be added here -->
             </div>
         </div>
     </div>
 
+    <footer>
+        <div class="footer-content">
+            <p>جميع الحقوق محفوظة لدى master key</p>
+            <p>العراق، سوق الشيوخ</p>
+        </div>
+    </footer>
+
     <script>
-        // بيانات التطبيق
+        // --- App Configuration ---
         const dataSources = [
             'https://raw.githubusercontent.com/iqsd2020-ctrl/MASTER_KEY_DATA/main/Chevrolet_Gmc.csv',
             'https://raw.githubusercontent.com/iqsd2020-ctrl/MASTER_KEY_DATA/main/Dodge_Jeep_Chrysler.csv',
@@ -341,9 +355,8 @@
         ];
 
         let allData = [];
-        let searchResults = [];
 
-        // عناصر DOM
+        // --- DOM Elements ---
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
         const syncBtn = document.getElementById('syncBtn');
@@ -351,188 +364,199 @@
         const loadingEl = document.getElementById('loading');
         const resultsContainer = document.getElementById('resultsContainer');
         const modal = document.getElementById('modal');
+        const modalHeader = document.getElementById('modalHeader');
         const modalResults = document.getElementById('modalResults');
         const closeModal = document.getElementById('closeModal');
 
-        // تهيئة التطبيق
+        // --- App Initialization ---
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
-            
-            // إضافة مستمعي الأحداث
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
             searchBtn.addEventListener('click', performSearch);
             syncBtn.addEventListener('click', syncData);
             closeModal.addEventListener('click', () => modal.style.display = 'none');
-            searchInput.addEventListener('keypress', function(e) {
+            searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') performSearch();
             });
-            
-            // النقر خارج النافذة المنبثقة لإغلاقها
-            window.addEventListener('click', function(e) {
+            window.addEventListener('click', (e) => {
                 if (e.target === modal) modal.style.display = 'none';
             });
-        });
+        }
 
-        // تحميل البيانات من localStorage أو المزامنة
+        // --- Data Handling ---
         async function loadData() {
             const storedData = localStorage.getItem('csvData');
             const lastSync = localStorage.getItem('lastSync');
-            
+
             if (storedData && lastSync) {
-                statusEl.textContent = `تم تحميل البيانات (آخر مزامنة: ${new Date(parseInt(lastSync)).toLocaleString()})`;
                 allData = JSON.parse(storedData);
+                statusEl.textContent = `تم تحميل البيانات (آخر مزامنة: ${new Date(parseInt(lastSync)).toLocaleString()})`;
             } else {
                 await syncData();
             }
         }
 
-        // مزامنة البيانات من المصادر
         async function syncData() {
             statusEl.textContent = 'جاري مزامنة البيانات...';
             loadingEl.style.display = 'block';
-            
+            resultsContainer.innerHTML = '';
+            allData = [];
+
             try {
-                allData = [];
-                
-                for (const source of dataSources) {
-                    const response = await fetch(source);
-                    const csvText = await response.text();
+                const responses = await Promise.all(dataSources.map(url => fetch(url)));
+                const textPromises = responses.map(res => res.text());
+                const csvTexts = await Promise.all(textPromises);
+
+                csvTexts.forEach(csvText => {
                     const data = parseCSV(csvText);
                     allData = allData.concat(data);
-                }
-                
+                });
+
                 localStorage.setItem('csvData', JSON.stringify(allData));
                 localStorage.setItem('lastSync', Date.now().toString());
-                
                 statusEl.textContent = `تمت المزامنة بنجاح (${allData.length} سجل)`;
             } catch (error) {
-                console.error('خطأ في المزامنة:', error);
+                console.error('Sync Error:', error);
                 statusEl.textContent = 'حدث خطأ أثناء المزامنة';
+            } finally {
+                loadingEl.style.display = 'none';
             }
-            
-            loadingEl.style.display = 'none';
         }
 
-        // تحليل CSV إلى كائنات JavaScript
         function parseCSV(csvText) {
-            const lines = csvText.split('\n');
-            const headers = lines[0].split(',').map(h => h.trim());
+            const lines = csvText.trim().split('\n');
+            if (lines.length < 2) return [];
             
+            const headers = lines[0].split(',').map(h => h.trim());
             const data = [];
+
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
-                
                 const values = lines[i].split(',').map(v => v.trim());
-                const entry = {};
+                if (values.length !== headers.length) continue; 
                 
+                const entry = {};
                 headers.forEach((header, index) => {
                     entry[header] = values[index] || '';
                 });
-                
                 data.push(entry);
             }
-            
             return data;
         }
 
-        // تنفيذ البحث
+        // --- Search Logic ---
         function performSearch() {
             const query = searchInput.value.trim();
-            
             if (!query) {
                 statusEl.textContent = 'يرجى إدخال كلمة للبحث';
                 return;
             }
-            
+
             loadingEl.style.display = 'block';
             resultsContainer.style.display = 'none';
-            
-            // محاكاة البحث غير المتزامن
+            statusEl.textContent = '';
+
             setTimeout(() => {
-                searchResults = smartSearch(allData, query);
+                const searchResults = smartSearch(allData, query);
                 displayResults(searchResults);
                 loadingEl.style.display = 'none';
-                
+
                 if (searchResults.length > 0) {
                     statusEl.textContent = `تم العثور على ${searchResults.length} نتيجة`;
                     resultsContainer.style.display = 'flex';
-                    showModal();
                 } else {
                     statusEl.textContent = 'لم يتم العثور على نتائج';
+                    resultsContainer.innerHTML = ''; 
                 }
-            }, 500);
+            }, 300); 
         }
 
-        // البحث الذكي (غير حساس لحالة الأحرف والحركات)
+        /**
+         * FIXED: Bilingual search function with a simple translation map.
+         * Now searches for Arabic keywords and their English equivalents.
+         */
         function smartSearch(data, query) {
-            // تطبيع النص (إزالة التشكيل والتغيير إلى أحرف صغيرة)
-            const normalizeText = (text) => {
-                return text
-                    .normalize('NFD')
-                    .replace(/[\u064B-\u065F]/g, '') // إزالة التشكيل العربي
-                    .toLowerCase();
+            // A simple dictionary to translate common Arabic car terms to English
+            const translationMap = {
+                'تويوتا': 'toyota', 'لكزس': 'lexus', 'كامري': 'camry', 'افالون': 'avalon',
+                'راف فور': 'rav4', 'شفروليه': 'chevrolet', 'جي ام سي': 'gmc',
+                'دودج': 'dodge', 'جيب': 'jeep', 'كرايسلر': 'chrysler', 'هوندا': 'honda',
+                'فورد': 'ford', 'ميتسوبيشي': 'mitsubishi', 'انفنتي': 'infiniti',
+                'نيسان': 'nissan', 'كيا': 'kia', 'هيونداي': 'hyundai', 'بصمة': 'smart',
+                'لاندكروزر': 'land cruiser'
             };
-            
-            const normalizedQuery = normalizeText(query);
-            
-            return data.filter(item => {
-                // البحث في جميع خصائص الكائن
-                for (const key in item) {
-                    if (item.hasOwnProperty(key)) {
-                        const normalizedValue = normalizeText(item[key]);
-                        
-                        // البحث عن الكلمة كاملة أو جزئية
-                        if (normalizedValue.includes(normalizedQuery)) {
-                            return true;
-                        }
-                    }
+
+            const normalizeText = (text) => 
+                text.toString().normalize('NFD').replace(/[\u064B-\u065F]/g, '').toLowerCase();
+
+            const originalKeywords = query.split(' ').filter(k => k).map(normalizeText);
+
+            if (originalKeywords.length === 0) return [];
+
+            // Create groups of keywords, each group contains the original Arabic word and its English translation
+            const keywordGroups = originalKeywords.map(k => {
+                const translations = [k];
+                if (translationMap[k]) {
+                    translations.push(translationMap[k]);
                 }
-                return false;
+                return translations;
+            });
+
+            return data.filter(item => {
+                const itemValuesString = Object.values(item).map(normalizeText).join(' ');
+                
+                // For a record to be a match, it must contain a word from *every* group.
+                // This maintains the AND logic for multi-word searches.
+                return keywordGroups.every(group => 
+                    // Check if at least one word from the group (e.g., "تويوتا" or "toyota") exists in the record.
+                    group.some(keyword => itemValuesString.includes(keyword))
+                );
             });
         }
 
-        // عرض النتائج في البطاقات
+
+        // --- UI Rendering ---
         function displayResults(results) {
             resultsContainer.innerHTML = '';
             modalResults.innerHTML = '';
-            
+
             if (results.length === 0) return;
-            
-            // عرض أول 6 نتائج فقط في الصفحة الرئيسية
-            const displayCount = Math.min(results.length, 6);
-            
-            for (let i = 0; i < displayCount; i++) {
-                const card = createCard(results[i]);
-                resultsContainer.appendChild(card);
+
+            const initialDisplayCount = Math.min(results.length, 6);
+            for (let i = 0; i < initialDisplayCount; i++) {
+                resultsContainer.appendChild(createCard(results[i]));
             }
-            
-            // عرض جميع النتائج في النافذة المنبثقة
+
+            if (results.length > 6) {
+                const viewAllBtn = document.createElement('button');
+                viewAllBtn.className = 'sync-btn view-all-btn';
+                viewAllBtn.textContent = `عرض كل النتائج (${results.length})`;
+                viewAllBtn.onclick = showModal;
+                resultsContainer.appendChild(viewAllBtn);
+            }
+
             results.forEach(item => {
-                const card = createCard(item);
-                modalResults.appendChild(card);
+                modalResults.appendChild(createCard(item));
             });
+            modalHeader.textContent = `نتائج البحث (${results.length})`;
         }
 
-        // إنشاء بطاقة عرض للبيانات
         function createCard(data) {
             const card = document.createElement('div');
             card.className = 'card';
-            
-            let cardContent = '<div class="card-header">';
-            
-            // استخدام أول خاصية غير فارغة كعنوان
-            for (const key in data) {
+
+            const keys = Object.keys(data);
+            const titleKey = keys.length > 0 ? keys[0] : '';
+            const titleValue = data[titleKey] || 'بيانات غير متوفرة';
+
+            let contentHTML = `<div class="card-header"><h3>${titleValue}</h3></div><div class="card-content">`;
+
+            for (const key of keys) {
                 if (data[key] && data[key].trim() !== '') {
-                    cardContent += `<h3>${data[key]}</h3>`;
-                    break;
-                }
-            }
-            
-            cardContent += '</div><div class="card-content">';
-            
-            // إضافة البيانات إلى البطاقة
-            for (const key in data) {
-                if (data[key] && data[key].trim() !== '') {
-                    cardContent += `
+                    contentHTML += `
                         <div class="card-row">
                             <span class="card-label">${key}:</span>
                             <span>${data[key]}</span>
@@ -540,17 +564,22 @@
                     `;
                 }
             }
-            
-            cardContent += '</div>';
-            card.innerHTML = cardContent;
-            
+
+            contentHTML += '</div>';
+            card.innerHTML = contentHTML;
             return card;
         }
 
-        // عرض النافذة المنبثقة
         function showModal() {
             modal.style.display = 'flex';
         }
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
